@@ -1,15 +1,16 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../providers/AuthProviders';
+import { signInWithPopup } from 'firebase/auth';
 
 const Login = () => {
     const [error, setError] = useState('')
-    const {signIn}=useContext(AuthContext)
+    const { signIn, signInWithGoogle } = useContext(AuthContext)
     const handleLogin = event => {
         event.preventDefault();
         const form = event.target;
-        const email =form.email.value;
-        const password =form.password.value;
+        const email = form.email.value;
+        const password = form.password.value;
 
         signIn(email, password)
             .then(result => {
@@ -20,6 +21,16 @@ const Login = () => {
             .catch(error => {
                 console.log(error.message)
                 setError(error.message)
+            })
+    }
+    const handleGoogleSignIn = () => {
+        signInWithGoogle()
+            .then(result => {
+                const loggedUser = result.user;
+                console.log(loggedUser)
+            })
+            .catch(error => {
+                console.log(error.message)
             })
     }
     return (
@@ -48,10 +59,13 @@ const Login = () => {
                         <div className="form-control mt-6">
                             <button className="btn btn-primary">Login</button>
                         </div>
+                        <div className="form-control mt-6">
+                            <button onClick={handleGoogleSignIn} className="btn btn-primary">Google SignIn</button>
+                        </div>
                     </form>
                     <label className="label">
-                            <Link to="/register" className="label-text-alt link link-hover">New to Auth Master? Please Register</Link>
-                        </label>
+                        <Link to="/register" className="label-text-alt link link-hover">New to Auth Master? Please Register</Link>
+                    </label>
                 </div>
             </div>
         </div>
